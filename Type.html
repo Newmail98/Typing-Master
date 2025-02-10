@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Practice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #333;
+        }
+        #typing-area {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px 0;
+            font-size: 1.5em;
+            text-align: center;
+            white-space: pre-wrap;
+        }
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+            text-decoration: underline;
+        }
+        #input-box {
+            width: 80%;
+            max-width: 600px;
+            padding: 10px;
+            font-size: 1.2em;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Typing Practice</h1>
+    <div id="typing-area"></div>
+    <input type="text" id="input-box" placeholder="Start typing here..." autofocus>
+    <div id="result"></div>
+
+    <script>
+        const words = [
+            "The quick brown fox jumps over the lazy dog.",
+            "Practice makes perfect.",
+            "Never give up on your dreams.",
+            "Every moment is a fresh beginning.",
+            "Success is not final, failure is not fatal."
+        ];
+        let currentWordIndex = 0;
+        let startTime, endTime;
+
+        const typingArea = document.getElementById('typing-area');
+        const inputBox = document.getElementById('input-box');
+        const result = document.getElementById('result');
+
+        function loadNewWord() {
+            const word = words[currentWordIndex];
+            typingArea.innerHTML = '';
+            word.split('').forEach(char => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                typingArea.appendChild(span);
+            });
+            inputBox.value = '';
+            inputBox.disabled = false;
+            inputBox.focus();
+            startTime = new Date();
+        }
+
+        function checkInput() {
+            const characters = typingArea.querySelectorAll('span');
+            const inputValue = inputBox.value;
+
+            characters.forEach((charSpan, index) => {
+                const character = inputValue[index];
+                if (character == null) {
+                    charSpan.classList.remove('correct', 'incorrect');
+                } else if (character === charSpan.textContent) {
+                    charSpan.classList.add('correct');
+                    charSpan.classList.remove('incorrect');
+                } else {
+                    charSpan.classList.add('incorrect');
+                    charSpan.classList.remove('correct');
+                }
+            });
+
+            if (inputValue === words[currentWordIndex]) {
+                inputBox.disabled = true;
+                endTime = new Date();
+                const timeTaken = (endTime - startTime) / 1000;
+                result.textContent = `Time taken: ${timeTaken} seconds.`;
+                currentWordIndex = (currentWordIndex + 1) % words.length;
+                setTimeout(loadNewWord, 2000);
+            }
+        }
+
+        inputBox.addEventListener('input', checkInput);
+
+        loadNewWord();
+    </script>
+</body>
+</html>
